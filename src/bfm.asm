@@ -3,12 +3,11 @@ org 0x400000
 
 %include "elfhdr.inc"
 
-%define TAPE_SIZE     30000
+%define TAPE_SIZE 30000
 
 _start:
     ; Program pointer (argv[1])
     mov     rbx, [rsp + 16]
-    dec     rbx
 
     ; Reserve tape space on stack
     sub     rsp, TAPE_SIZE
@@ -23,7 +22,6 @@ _start:
     mov     rbp, rsp
 
 .mainloop:
-    inc     rbx
     mov     dil, byte [rbx]
     test    dil, dil
     je      .exit
@@ -45,32 +43,33 @@ _start:
     cmp     dil, ','
     je      .input
 
+.next:
+    inc     rbx
     jmp     .mainloop
 
 .increment:
     inc     byte [rbp]
-    jmp     .mainloop
+    jmp     .next
 
 .decrement:
     dec     byte [rbp]
-    jmp     .mainloop
+    jmp     .next
 
 .inccp:
     inc     rbp
-    jmp     .mainloop
+    jmp     .next
 
 .deccp:
     dec     rbp
-    jmp     .mainloop
+    jmp     .next
 
 .jumpf:
     cmp     byte [rbp], 0
-    jne     .mainloop
+    jne     .next
 
     mov     ecx, 1
 .jumpf_search:
     inc     rbx
-
     mov     al, byte [rbx]
     cmp     al, '['
     je      .jumpf_inc_depth
@@ -85,14 +84,13 @@ _start:
 .jumpf_dec_depth:
     dec     ecx
     jnz     .jumpf_search
-    jmp     .mainloop
+    jmp     .next
 
 .jumpb:
     cmp     byte [rbp], 0
-    je      .mainloop
+    je      .next
 
     mov     ecx, 1
-
 .jumpb_search:
     dec     rbx
     mov     al, byte [rbx]
@@ -109,7 +107,7 @@ _start:
 .jumpb_dec_depth:
     dec     ecx
     jnz     .jumpb_search
-    jmp     .mainloop
+    jmp     .next
 
 .output:
     mov     eax, 1
@@ -117,7 +115,7 @@ _start:
     mov     edx, 1
     mov     rsi, rbp
     syscall
-    jmp     .mainloop
+    jmp     .next
 
 .input:
     mov     eax, 0
@@ -125,7 +123,7 @@ _start:
     mov     rsi, rbp
     mov     edx, 1
     syscall
-    jmp     .mainloop
+    jmp     .next
 
 ; End program
 .exit:
