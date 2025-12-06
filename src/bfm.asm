@@ -3,38 +3,30 @@ org 0x400000
 
 %include "elfhdr.inc"
 
-%define MAX_PRGM_SIZE 35536
 %define TAPE_SIZE     30000
 
 _start:
-    sub     rsp, TAPE_SIZE + MAX_PRGM_SIZE
+    ; Program pointer (argv[1])
+    mov     rbx, [rsp + 16]
+    dec     rbx
+
+    ; Reserve tape space on stack
+    sub     rsp, TAPE_SIZE
 
     ; Clear out stack
     xor     eax, eax
     mov     rdi, rsp
-    mov     rcx, TAPE_SIZE + MAX_PRGM_SIZE
+    mov     rcx, TAPE_SIZE
     rep     stosb
-
-    ; Read program from stdin pipe
-    mov     eax, 0
-    xor     edi, edi
-    mov     edx, MAX_PRGM_SIZE
-    lea     rsi, [rsp + TAPE_SIZE]
-    syscall
-
-    lea     r12, [rsp + rax + TAPE_SIZE]
 
     ; Tape pointer
     mov     rbp, rsp
-    ; Program pointer
-    lea     rbx, [rsp + TAPE_SIZE - 1]
 
 .mainloop:
     inc     rbx
-    cmp     rbx, r12
-    jae     .exit
-
     mov     dil, byte [rbx]
+    test    dil, dil
+    je      .exit
 
     cmp     dil, '+'
     je      .increment
