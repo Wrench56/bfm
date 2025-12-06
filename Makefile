@@ -13,7 +13,7 @@ clean:
 	rm -f $(TARGET)
 
 run: $(TARGET)
-	strace ./$(TARGET)
+	strace ./$(TARGET) $(ARGS)
 
 dump: $(TARGET)
 	readelf -h $(TARGET)
