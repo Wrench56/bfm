@@ -116,7 +116,7 @@ _start:
     inc     eax
     xor     edi, edi
     inc     edi
-    xor     edx, edx
+    cdq
     inc     edx
     mov     rsi, rbp
     syscall
@@ -126,7 +126,7 @@ _start:
     xor     eax, eax
     xor     edi, edi
     mov     rsi, rbp
-    xor     edx, edx
+    cdq
     inc     edx
     syscall
     jmp     .next
