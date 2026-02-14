@@ -114,10 +114,8 @@ _start:
 .output:
     xor     eax, eax
     inc     eax
-    xor     edi, edi
-    inc     edi
-    cdq
-    inc     edx
+    mov     edi, eax
+    mov     edx, eax
     mov     rsi, rbp
     syscall
     jmp     .next
