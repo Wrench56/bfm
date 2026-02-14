@@ -67,7 +67,8 @@ _start:
     cmp     byte [rbp], 0
     jne     .next
 
-    mov     ecx, 1
+    xor     ecx, ecx
+    inc     ecx
 .jumpf_search:
     inc     rbx
     mov     al, byte [rbx]
@@ -90,7 +91,8 @@ _start:
     cmp     byte [rbp], 0
     je      .next
 
-    mov     ecx, 1
+    xor     ecx, ecx
+    inc     ecx
 .jumpb_search:
     dec     rbx
     mov     al, byte [rbx]
@@ -110,18 +112,22 @@ _start:
     jmp     .next
 
 .output:
-    mov     eax, 1
-    mov     edi, 1
-    mov     edx, 1
+    xor     eax, eax
+    inc     eax
+    xor     edi, edi
+    inc     edi
+    xor     edx, edx
+    inc     edx
     mov     rsi, rbp
     syscall
     jmp     .next
 
 .input:
-    mov     eax, 0
+    xor     eax, eax
     xor     edi, edi
     mov     rsi, rbp
-    mov     edx, 1
+    xor     edx, edx
+    inc     edx
     syscall
     jmp     .next
 
