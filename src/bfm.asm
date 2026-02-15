@@ -22,25 +22,25 @@ _start:
     mov     rbp, rsp
 
 .mainloop:
-    mov     dil, byte [rbx]
-    test    dil, dil
+    mov     al, byte [rbx]
+    test    al, al
     je      .exit
 
-    sub     dil, '+'
+    sub     al, '+'
     jz      .increment
-    dec     dil ; ','
+    dec     al ; ','
     jz      .input
-    dec     dil ; '-'
+    dec     al ; '-'
     jz      .decrement
-    dec     dil ; '.'
+    dec     al ; '.'
     jz      .output
-    sub     dil, 14 ; '<'
+    sub     al, 14 ; '<'
     jz      .deccp
-    sub     dil, 2 ; '>'
+    sub     al, 2 ; '>'
     jz      .inccp
-    sub     dil, 29 ; '['
+    sub     al, 29 ; '['
     jz      .jumpf
-    sub     dil, 2 ; ']'
+    sub     al, 2 ; ']'
     jz      .jumpb
 
 .next:
