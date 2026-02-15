@@ -26,22 +26,22 @@ _start:
     test    dil, dil
     je      .exit
 
-    cmp     dil, '+'
-    je      .increment
-    cmp     dil, '-'
-    je      .decrement
-    cmp     dil, '>'
-    je      .inccp
-    cmp     dil, '<'
-    je      .deccp
-    cmp     dil, '['
-    je      .jumpf
-    cmp     dil, ']'
-    je      .jumpb
-    cmp     dil, '.'
-    je      .output
-    cmp     dil, ','
-    je      .input
+    sub     dil, '+'
+    jz      .increment
+    dec     dil ; ','
+    jz      .input
+    dec     dil ; '-'
+    jz      .decrement
+    dec     dil ; '.'
+    jz      .output
+    sub     dil, 14 ; '<'
+    jz      .deccp
+    sub     dil, 2 ; '>'
+    jz      .inccp
+    sub     dil, 29 ; '['
+    jz      .jumpf
+    sub     dil, 2 ; ']'
+    jz      .jumpb
 
 .next:
     inc     rbx
