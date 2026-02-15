@@ -5,6 +5,11 @@ org 0x400000
 
 %define TAPE_SIZE 30000
 
+_exit:
+    mov     eax, 60
+    xor     edi, edi
+    syscall
+
 _start:
     ; Program pointer (argv[1])
     mov     rsi, [rsp + 16]
@@ -24,7 +29,7 @@ _start:
 .mainloop:
     lodsb
     test    al, al
-    je      .exit
+    je      _exit
 
     sub     al, '+'
     jz      .increment
@@ -131,11 +136,5 @@ _start:
     syscall
     pop     rsi
     jmp     .next
-
-; End program
-.exit:
-    mov     eax, 60
-    xor     edi, edi
-    syscall
 
 _end:
