@@ -10,6 +10,28 @@ _exit:
     xor     edi, edi
     syscall
 
+_output:
+    xor     eax, eax
+    inc     eax
+    mov     edi, eax
+    mov     edx, eax
+    push    rsi
+    mov     rsi, rbp
+    syscall
+    pop     rsi
+    jmp     _start.mainloop
+
+_input:
+    xor     eax, eax
+    xor     edi, edi
+    push    rsi
+    mov     rsi, rbp
+    cdq
+    inc     edx
+    syscall
+    pop     rsi
+    jmp     _start.mainloop
+
 _start:
     ; Program pointer (argv[1])
     mov     rsi, [rsp + 16]
@@ -34,11 +56,11 @@ _start:
     sub     al, '+'
     jz      .increment
     dec     al ; ','
-    jz      .input
+    jz      _input
     dec     al ; '-'
     jz      .decrement
     dec     al ; '.'
-    jz      .output
+    jz      _output
     sub     al, 14 ; '<'
     jz      .deccp
     sub     al, 2 ; '>'
@@ -113,28 +135,6 @@ _start:
 .jumpb_dec_depth:
     dec     ecx
     jnz     .jumpb_search
-    jmp     .next
-
-.output:
-    xor     eax, eax
-    inc     eax
-    mov     edi, eax
-    mov     edx, eax
-    push    rsi
-    mov     rsi, rbp
-    syscall
-    pop     rsi
-    jmp     .next
-
-.input:
-    xor     eax, eax
-    xor     edi, edi
-    push    rsi
-    mov     rsi, rbp
-    cdq
-    inc     edx
-    syscall
-    pop     rsi
     jmp     .next
 
 _end:
