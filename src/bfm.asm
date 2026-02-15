@@ -7,7 +7,7 @@ org 0x400000
 
 _start:
     ; Program pointer (argv[1])
-    mov     rbx, [rsp + 16]
+    mov     rsi, [rsp + 16]
 
     ; Reserve tape space on stack
     sub     rsp, TAPE_SIZE
@@ -22,7 +22,7 @@ _start:
     mov     rbp, rsp
 
 .mainloop:
-    mov     al, byte [rbx]
+    lodsb
     test    al, al
     je      .exit
 
@@ -44,7 +44,6 @@ _start:
     jz      .jumpb
 
 .next:
-    inc     rbx
     jmp     .mainloop
 
 .increment:
@@ -70,8 +69,7 @@ _start:
     xor     ecx, ecx
     inc     ecx
 .jumpf_search:
-    inc     rbx
-    mov     al, byte [rbx]
+    lodsb
     cmp     al, '['
     je      .jumpf_inc_depth
     cmp     al, ']'
@@ -93,9 +91,10 @@ _start:
 
     xor     ecx, ecx
     inc     ecx
+    dec     rsi
 .jumpb_search:
-    dec     rbx
-    mov     al, byte [rbx]
+    dec     rsi
+    mov     al, [rsi]
     cmp     al, ']'
     je      .jumpb_inc_depth
     cmp     al, '['
@@ -116,17 +115,21 @@ _start:
     inc     eax
     mov     edi, eax
     mov     edx, eax
+    push    rsi
     mov     rsi, rbp
     syscall
+    pop     rsi
     jmp     .next
 
 .input:
     xor     eax, eax
     xor     edi, edi
+    push    rsi
     mov     rsi, rbp
     cdq
     inc     edx
     syscall
+    pop     rsi
     jmp     .next
 
 ; End program
