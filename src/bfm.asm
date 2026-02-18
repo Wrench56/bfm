@@ -1,10 +1,16 @@
 BITS 64
 org 0x400000
 
-%include "elfhdr.inc"
-
 %define TAPE_SIZE 30000
 
+%include "elfhdr.inc"
+
+section .bss
+align 16
+tape: resb TAPE_SIZE
+
+
+section .text
 _exit:
     mov     eax, 60
     xor     edi, edi
@@ -36,17 +42,7 @@ _start:
     ; Program pointer (argv[1])
     mov     rsi, [rsp + 16]
 
-    ; Reserve tape space on stack
-    sub     rsp, TAPE_SIZE
-
-    ; Clear out stack
-    xor     eax, eax
-    mov     rdi, rsp
-    mov     rcx, TAPE_SIZE
-    rep     stosb
-
-    ; Tape pointer
-    mov     rbp, rsp
+    lea     rbp, [rel tape]   
 
 .mainloop:
     lodsb
@@ -74,7 +70,7 @@ _start:
     jmp     .mainloop
 
 .increment:
-    inc     byte [rbp]
+    inc      byte [rbp]
     jmp     .next
 
 .decrement:
